@@ -1,7 +1,7 @@
 services:
   db:
     image: postgres:16-alpine
-    container_name: postgres_db
+    container_name: agrodata_postgres
     environment:
       POSTGRES_USER: db_user
       POSTGRES_PASSWORD: db_password
