@@ -75,3 +75,28 @@ def upsert_weather_daily(
                         raw_response_id,
                     ),
                 )
+
+def get_latest_observation_date(
+    ibge_code,
+    source,
+):
+    sql = """
+        SELECT MAX(observation_date)
+        FROM staging.weather_daily
+        WHERE ibge_code = %s
+          AND source = %s;
+    """
+
+    with get_connection() as connection:
+        with connection.cursor() as cursor:
+            cursor.execute(
+                sql,
+                (
+                    ibge_code,
+                    source,
+                ),
+            )
+
+            result = cursor.fetchone()
+
+    return result[0]
