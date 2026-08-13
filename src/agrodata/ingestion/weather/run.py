@@ -30,7 +30,7 @@ SOURCE = "NASA_POWER"
 MAX_BATCH_DAYS = 30
 DATA_LATENCY_DAYS = 3
 
-def run():
+def run(target_end_date=None):
     latest_date = get_latest_observation_date(
         ibge_code=IBGE_CODE,
         source=SOURCE,
@@ -41,14 +41,15 @@ def run():
     else:
         start_date = INITIAL_DATE
 
-    target_end_date = date.today() - timedelta(
-        days=DATA_LATENCY_DAYS
-    )
+    if target_end_date is None:
+        target_end_date = date.today() - timedelta(
+            days=DATA_LATENCY_DAYS
+        )
 
     if start_date > target_end_date:
         print("No new weather data to ingest.")
-        return
-
+        return False
+    
     batch_end_date = min(
         start_date + timedelta(days=MAX_BATCH_DAYS - 1),
         target_end_date,
@@ -94,6 +95,7 @@ def run():
         f"STAGING records: {len(records)}"
     )
 
+    return True
 
 if __name__ == "__main__":
     run()
